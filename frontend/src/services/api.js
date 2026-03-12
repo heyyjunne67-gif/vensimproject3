@@ -1,22 +1,18 @@
 const API_BASE = "https://vensimproject3.onrender.com";
-const ENV_API_BASE = import.meta.env.VITE_API_BASE;
+const ENV_API_BASE = import.meta.env.VITE_API_URL;
 
 function getApiBases() {
   const bases = [];
-  const preferredBase = (ENV_API_BASE || API_BASE || "").replace(/\/+$/, "");
-  if (envBase) bases.push(envBase);
-  if (typeof window !== "undefined") {
-    bases.push(`${window.location.protocol}//${window.location.hostname}:8011`);
-  }
-  bases.push("http://localhost:8011");
 
-  const normalized = [];
-  for (const base of bases) {
-    const clean = (base || "").replace(/\/+$/, "");
-    if (!clean) continue;
-    if (!normalized.includes(clean)) normalized.push(clean);
+  const preferredBase = (ENV_API_BASE || API_BASE || "").replace(/\/+$/, "");
+  const isStaleLocal8001 =
+    /^https?:\/\/(localhost|127\.0\.0\.1):8001$/i.test(preferredBase);
+
+  if (preferredBase && !isStaleLocal8001) {
+    bases.push(preferredBase);
   }
-  return normalized;
+
+  return bases;
 }
 
 function isNetworkFetchError(err) {
@@ -141,5 +137,6 @@ export async function apiChatGraph(payload) {
   }
   return body;
 }
+
 
 
