@@ -4,8 +4,7 @@ const ENV_API_BASE = import.meta.env.VITE_API_BASE;
 function getApiBases() {
   const bases = [];
   const preferredBase = (ENV_API_BASE || API_BASE || "").replace(/\/+$/, "");
-  const isStaleLocal8001 = /^https?:\/\/(localhost|127\.0\.0\.1):8001$/i.test(preferredBase);
-  if (preferredBase && !isStaleLocal8001) bases.push(preferredBase);
+  if (envBase) bases.push(envBase);
   if (typeof window !== "undefined") {
     bases.push(`${window.location.protocol}//${window.location.hostname}:8011`);
   }
@@ -142,4 +141,5 @@ export async function apiChatGraph(payload) {
   }
   return body;
 }
+
 
